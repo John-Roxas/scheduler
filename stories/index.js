@@ -164,4 +164,4 @@ storiesOf("Appointment", module)
   .add("Appointment", () => <Appointment />)
   .add("Appointment with Time", () => <Appointment time="12pm" />)
   .add("Header", () => <Header time={"12pm"} />)
-  .add("Empty", () => <Empty />);
+  .add("Empty", () => <Empty onAdd={action("onAdd")} />);
