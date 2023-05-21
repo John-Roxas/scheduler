@@ -181,4 +181,5 @@ storiesOf("Appointment", module)
       onConfirm={action("onConfirm")}
       onCancel={action("onCancel")}
     />
-  ));
+  ))
+  .add("Status", () => <Status message={"Deteling"} />);
