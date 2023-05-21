@@ -117,11 +117,39 @@ storiesOf("InterviewerList", module)
   })
   .add("Initial", () => <InterviewerList interviewers={interviewers} />)
   .add("Selected", () => (
-    <InterviewerList interviewers={interviewers} interviewer={3} />
+    <InterviewerList interviewers={interviewers} value={3} />
   ))
   .add("Clickable", () => (
     <InterviewerList
       interviewers={interviewers}
-      setInterviewer={action("setInterviewer")}
+      onChange={action("setInterviewer")}
+    />
+  ));
+storiesOf("InterviewerList", module)
+  .addParameters({
+    backgrounds: [{ name: "dark", value: "#222f3e", default: true }],
+  })
+  .add("Initial", () => <InterviewerList interviewers={interviewers} />)
+  .add("Selected", () => (
+    <InterviewerList interviewers={interviewers} value={3} />
+  ))
+  .add("Clickable", () => (
+    <InterviewerList
+      interviewers={interviewers}
+      onChange={action("setInterviewer")}
+    />
+  ));
+storiesOf("InterviewerList", module)
+  .addParameters({
+    backgrounds: [{ name: "dark", value: "#222f3e", default: true }],
+  })
+  .add("Initial", () => <InterviewerList interviewers={interviewers} />)
+  .add("Selected", () => (
+    <InterviewerList interviewers={interviewers} value={3} />
+  ))
+  .add("Clickable", () => (
+    <InterviewerList
+      interviewers={interviewers}
+      onChange={action("setInterviewer")}
     />
   ));
