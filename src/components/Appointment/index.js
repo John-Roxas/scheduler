@@ -1,5 +1,6 @@
 import React from "react";
-import "Appointment/styles.scss";
+import "./styles.scss";
+import Header from "./Header";
 
 export default function Appointment(props) {
   return <article className="appointment"></article>;
