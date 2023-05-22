@@ -62,6 +62,7 @@ const appointments = {
 export default function Application(props) {
   // Set the default state to Monday using a useState hook
   const [day, setDay] = useState("Monday");
+
   return (
     <main className="layout">
       <section className="sidebar">
@@ -82,7 +83,13 @@ export default function Application(props) {
         />
       </section>
       <section className="schedule">
-        {/* Replace this with the schedule elements durint the "The Scheduler" activity. */}
+        {Object.values(appointments).map((appointment) => (
+          <Appointment
+            key={appointment.id}
+            time={appointment.time}
+            interview={appointment.interview}
+          />
+        ))}
       </section>
     </main>
   );
