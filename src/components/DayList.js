@@ -1,30 +1,25 @@
-import React from "react";
+import React, { useState } from "react";
 import classNames from "classnames";
 import DayListItem from "components/DayListItem";
 
 import "components/DayList.scss";
 
 export default function DayList(props) {
-  // console.log(props.days);
+  const { days, value, onChange } = props;
 
-  let days = props.days;
+  const handleDayClick = (dayName) => {
+    onChange(dayName); // Call the onChange function passed from the parent component
+  };
 
-  // console.log(days);
-
-  let listItems = [];
-  days.map((day) => {
-    listItems.push(
-      <DayListItem
-        key={day.id}
-        name={day.name}
-        spots={day.spots}
-        selected={day.name === props.value}
-        setDay={day.onChange}
-      />
-    );
-  });
-
-  // console.log(listItems);
+  const listItems = days.map((day) => (
+    <DayListItem
+      key={day.id}
+      name={day.name}
+      spots={day.spots}
+      selected={day.name === value}
+      setDay={handleDayClick}
+    />
+  ));
 
   return <ul>{listItems}</ul>;
 }

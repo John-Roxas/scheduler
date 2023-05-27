@@ -1,8 +1,10 @@
-import React, { useState } from "react";
+import axios from "axios";
+import React, { useState, useEffect } from "react";
 
 import "components/Application.scss";
 import DayListItem from "components/DayListItem";
 import DayList from "components/DayList";
+import Appointment from "./Appointment";
 
 const days = [
   {
@@ -61,7 +63,27 @@ const appointments = {
 };
 export default function Application(props) {
   // Set the default state to Monday using a useState hook
-  const [day, setDay] = useState("Monday");
+  const [state, setState] = useState({
+    day: "Monday",
+    days: [],
+    appointments: {},
+  });
+  const setDay = (day) => {
+    setState((prev) => ({ ...prev, day }));
+  };
+
+  useEffect(() => {
+    const grabData = async () => {
+      try {
+        const response = await axios.get("/api/days");
+        setState((prev) => ({ ...prev, days: response.data }));
+      } catch (error) {
+        console.error("Error fetching days!: ", error);
+      }
+    };
+
+    grabData();
+  }, []);
 
   return (
     <main className="layout">
@@ -74,7 +96,7 @@ export default function Application(props) {
         />
         <hr className="sidebar__separator sidebar--centered" />
         <nav className="sidebar__menu">
-          <DayList days={days} value={day} onChange={setDay} />
+          <DayList days={state.days} value={state.day} onChange={setDay} />
         </nav>
         <img
           className="sidebar__lhl sidebar--centered"
@@ -84,11 +106,7 @@ export default function Application(props) {
       </section>
       <section className="schedule">
         {Object.values(appointments).map((appointment) => (
-          <Appointment
-            key={appointment.id}
-            time={appointment.time}
-            interview={appointment.interview}
-          />
+          <Appointment key={appointment.id} {...appointment} />
         ))}
       </section>
     </main>
