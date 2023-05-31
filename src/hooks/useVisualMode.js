@@ -5,6 +5,8 @@ const useVisualMode = (initialMode) => {
   const [history, setHistory] = useState([initialMode]);
 
   const transition = useCallback((newMode, replace = false) => {
+    console.log("IN TRANSITION FUNC");
+    console.log(newMode);
     setHistory((prevHistory) =>
       replace
         ? [...prevHistory.slice(0, -1), newMode]
@@ -26,19 +28,3 @@ const useVisualMode = (initialMode) => {
 };
 
 export default useVisualMode;
-
-// test("useVisualMode should return to previous mode", () => {
-//   const { result } = renderHook(() => useVisualMode(FIRST));
-
-//   act(() => result.current.transition(SECOND));
-//   expect(result.current.mode).toBe(SECOND);
-
-//   act(() => result.current.transition(THIRD));
-//   expect(result.current.mode).toBe(THIRD);
-
-//   act(() => result.current.back());
-//   expect(result.current.mode).toBe(SECOND);
-
-//   act(() => result.current.back());
-//   expect(result.current.mode).toBe(FIRST);
-// });

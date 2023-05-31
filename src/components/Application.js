@@ -16,6 +16,7 @@ export default function Application(props) {
   const EMPTY = "EMPTY";
   const SHOW = "SHOW";
   const CREATE = "CREATE";
+  const CONFIRM = "CONFIRM";
 
   const [state, setState] = useState({
     day: "Monday",
@@ -85,6 +86,11 @@ export default function Application(props) {
     transition(CREATE);
   };
 
+  const confirmDelete = () => {
+    transition(CONFIRM);
+    console.log("ran confirm Delete!");
+  };
+
   function bookInterview(id, interview) {
     const appointment = {
       ...state.appointments[id],
@@ -134,6 +140,7 @@ export default function Application(props) {
         transition={transition}
         back={back}
         onAdd={() => onAdd(appointment.id)} // Pass the appointment ID to onAdd
+        confirmDelete={confirmDelete}
         bookInterview={bookInterview} // Pass the bookInterview function to the Appointment component
         cancelInterview={cancelInterview} // Pass the cancelInterview function to the Appointment component
       />
