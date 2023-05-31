@@ -21,12 +21,13 @@ export default function Appointment(props) {
     };
 
     props.bookInterview(props.id, interview);
-    console.log(interview);
+    // console.log(interview);
     transition(SHOW);
   };
 
   const cancel = () => {
     props.cancelInterview(props.id);
+    props.back();
   };
 
   let display;
