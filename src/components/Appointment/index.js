@@ -13,6 +13,8 @@ export default function Appointment(props) {
   const SHOW = "SHOW";
   const CONFIRM = "CONFIRM";
   const EDIT = "EDIT";
+  const SAVING = "SAVING";
+  const DELETING = "DELETING";
 
   const confirmDelete = () => {
     console.log(mode);
@@ -21,35 +23,43 @@ export default function Appointment(props) {
   };
 
   const edit = () => {
-    console.log("TRYING TO EDIT");
     transition(EDIT);
-    console.log(mode);
   };
 
   const { mode, transition, back } = useVisualMode(
     props.interview ? SHOW : EMPTY
   );
 
-  const save = (name, interviewer) => {
+  const save = async (name, interviewer) => {
     const interview = {
       student: name,
       interviewer,
     };
-
     props.bookInterview(props.id, interview);
-    // console.log(interview);
-    transition(SHOW);
+    transition(SAVING);
+    setTimeout(() => {
+      transition(SHOW);
+    }, 1000);
   };
 
   const cancel = () => {
-    console.log("Delete Successful!");
-    props.cancelInterview(props.id);
-    transition(EMPTY);
-    props.transition(EMPTY);
+    transition(DELETING);
+
+    setTimeout(() => {
+      props.cancelInterview(props.id);
+      transition(EMPTY);
+      props.transition(EMPTY);
+    }, 1000);
   };
 
   let display;
-  if (props.interview && mode !== "CONFIRM" && mode !== "EDIT") {
+  if (
+    props.interview &&
+    mode !== "CONFIRM" &&
+    mode !== "EDIT" &&
+    mode !== "DELETING" &&
+    mode !== "SAVING"
+  ) {
     display = (
       <Show
         student={props.interview.student}
@@ -88,6 +98,10 @@ export default function Appointment(props) {
         bookInterview={props.bookInterview}
       />
     );
+  } else if (mode === "DELETING") {
+    display = <Status message={"Deleting..."} />;
+  } else if (mode === "SAVING") {
+    display = <Status message={"Saving..."} />;
   } else {
     display = <Empty onAdd={props.onAdd} />;
   }
