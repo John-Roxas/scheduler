@@ -17,6 +17,7 @@ export default function Application(props) {
   const SHOW = "SHOW";
   const CREATE = "CREATE";
   const CONFIRM = "CONFIRM";
+  const EDIT = "EDIT";
 
   const [state, setState] = useState({
     day: "Monday",
@@ -86,8 +87,8 @@ export default function Application(props) {
     transition(CREATE);
   };
 
-  const confirmDelete = () => {
-    transition(CONFIRM);
+  const edit = () => {
+    transition(EDIT);
   };
 
   function bookInterview(id, interview) {
@@ -138,8 +139,8 @@ export default function Application(props) {
         mode={isActive ? mode : SHOW} // Pass the mode to the Appointment component only if it's active
         transition={transition}
         back={back}
+        edit={edit}
         onAdd={() => onAdd(appointment.id)} // Pass the appointment ID to onAdd
-        confirmDelete={confirmDelete}
         bookInterview={bookInterview} // Pass the bookInterview function to the Appointment component
         cancelInterview={cancelInterview} // Pass the cancelInterview function to the Appointment component
       />

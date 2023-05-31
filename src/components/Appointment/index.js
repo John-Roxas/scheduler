@@ -11,6 +11,16 @@ import useVisualMode from "../../hooks/useVisualMode";
 export default function Appointment(props) {
   const EMPTY = "EMPTY";
   const SHOW = "SHOW";
+  const CONFIRM = "CONFIRM";
+
+  const confirmDelete = () => {
+    console.log(props.mode);
+    console.log(mode);
+    transition(CONFIRM);
+    console.log("AFTER TRANSITION");
+    console.log(props.mode);
+    console.log(mode);
+  };
 
   const { mode, transition, back } = useVisualMode(
     props.interview ? SHOW : EMPTY
@@ -28,20 +38,23 @@ export default function Appointment(props) {
   };
 
   const cancel = () => {
+    console.log("Delete Successful!");
     props.cancelInterview(props.id);
+    transition(EMPTY);
     props.transition(EMPTY);
   };
 
   let display;
-  if (props.interview && props.mode !== "CONFIRM") {
+  if (props.interview && mode !== "CONFIRM") {
     display = (
       <Show
         student={props.interview.student}
         interviewer={props.interview.interviewer}
-        onDelete={props.confirmDelete}
+        onDelete={confirmDelete}
+        edit={props.edit}
       />
     );
-  } else if (props.mode === "CREATE") {
+  } else if (props.mode === "CREATE" && !props.interview) {
     // Render the Form component when mode is "CREATE"
 
     display = (
@@ -52,7 +65,7 @@ export default function Appointment(props) {
         bookInterview={props.bookInterview}
       />
     );
-  } else if (props.mode === "CONFIRM") {
+  } else if (mode === "CONFIRM") {
     display = (
       <Confirm
         message={"Are you sure you want to delete?"}
