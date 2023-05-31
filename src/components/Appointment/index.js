@@ -4,10 +4,27 @@ import Header from "./Header";
 import Show from "./Show";
 import Empty from "./Empty";
 import Form from "./Form"; // Import the Form component
+import useVisualMode from "../../hooks/useVisualMode";
 
 export default function Appointment(props) {
-  console.log("IN APPOINTMENT!");
-  console.log(props.interviewersForDay);
+  const EMPTY = "EMPTY";
+  const SHOW = "SHOW";
+
+  const { mode, transition, back } = useVisualMode(
+    props.interview ? SHOW : EMPTY
+  );
+
+  const save = (name, interviewer) => {
+    const interview = {
+      student: name,
+      interviewer,
+    };
+
+    props.bookInterview(props.id, interview);
+    console.log(interview);
+    transition(SHOW);
+  };
+
   let display;
   if (props.interview) {
     display = (
@@ -20,7 +37,12 @@ export default function Appointment(props) {
     // Render the Form component when mode is "CREATE"
 
     display = (
-      <Form onCancel={props.back} interviewers={props.interviewersForDay} />
+      <Form
+        onCancel={props.back}
+        interviewers={props.interviewersForDay}
+        onSave={save}
+        bookInterview={props.bookInterview}
+      />
     );
   } else {
     display = <Empty onAdd={props.onAdd} />;

@@ -84,8 +84,40 @@ export default function Application(props) {
     setActiveAppointment(appointmentId); // Set the active appointment ID when the button is clicked
     transition(CREATE);
   };
-  console.log("In Application, right before the schedule map");
-  console.log(interviewersForDay);
+
+  function bookInterview(id, interview) {
+    const appointment = {
+      ...state.appointments[id],
+      interview: { ...interview },
+    };
+
+    const appointments = {
+      ...state.appointments,
+      [id]: appointment,
+    };
+
+    setState({
+      ...state,
+      appointments,
+    });
+  }
+
+  const cancelInterview = (id) => {
+    // Create a new appointments object with the appointment's interview set to null
+    const updatedAppointments = {
+      ...state.appointments,
+      [id]: {
+        ...state.appointments[id],
+        interview: null,
+      },
+    };
+
+    setState((prev) => ({
+      ...prev,
+      appointments: updatedAppointments,
+    }));
+  };
+
   const schedule = appointments.map((appointment) => {
     const interview = getInterview(state, appointment.interview);
     const isActive = appointment.id === activeAppointment; // Check if the current appointment is active
@@ -102,6 +134,8 @@ export default function Application(props) {
         transition={transition}
         back={back}
         onAdd={() => onAdd(appointment.id)} // Pass the appointment ID to onAdd
+        bookInterview={bookInterview} // Pass the bookInterview function to the Appointment component
+        cancelInterview={cancelInterview} // Pass the cancelInterview function to the Appointment component
       />
     );
   });

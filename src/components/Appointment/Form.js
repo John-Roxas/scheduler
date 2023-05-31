@@ -11,8 +11,9 @@ export default function Form(props) {
     setInterviewer(null);
   };
 
-  console.log("In the form!");
-  console.log(props.interviewersForDay);
+  const onSave = () => {
+    props.onSave(student, interviewer);
+  };
 
   return (
     <main className="appointment__card appointment__card--create">
@@ -23,27 +24,22 @@ export default function Form(props) {
             name={student.name}
             type="text"
             placeholder="Enter Student Name"
+            value={student}
             onChange={(event) => setStudent(event.target.value)}
           />
         </form>
         <InterviewerList
           interviewers={props.interviewers}
-          // value={interviewer}
+          value={interviewer}
           onChange={setInterviewer}
         />
       </section>
       <section className="appointment__card-right">
         <section className="appointment__actions">
-          <Button
-            danger
-            onClick={() => {
-              props.onCancel();
-              reset();
-            }}
-          >
+          <Button danger onClick={props.onCancel}>
             Cancel
           </Button>
-          <Button confirm onClick={props.onSave}>
+          <Button confirm onClick={onSave}>
             Save
           </Button>
         </section>
