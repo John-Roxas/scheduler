@@ -88,7 +88,6 @@ export default function Application(props) {
 
   const confirmDelete = () => {
     transition(CONFIRM);
-    console.log("ran confirm Delete!");
   };
 
   function bookInterview(id, interview) {

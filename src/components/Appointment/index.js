@@ -11,7 +11,6 @@ import useVisualMode from "../../hooks/useVisualMode";
 export default function Appointment(props) {
   const EMPTY = "EMPTY";
   const SHOW = "SHOW";
-  const CONFIRM = "CONFIRM";
 
   const { mode, transition, back } = useVisualMode(
     props.interview ? SHOW : EMPTY
@@ -30,7 +29,7 @@ export default function Appointment(props) {
 
   const cancel = () => {
     props.cancelInterview(props.id);
-    props.back();
+    props.transition(EMPTY);
   };
 
   let display;

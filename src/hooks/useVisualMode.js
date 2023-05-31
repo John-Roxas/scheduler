@@ -5,8 +5,6 @@ const useVisualMode = (initialMode) => {
   const [history, setHistory] = useState([initialMode]);
 
   const transition = useCallback((newMode, replace = false) => {
-    console.log("IN TRANSITION FUNC");
-    console.log(newMode);
     setHistory((prevHistory) =>
       replace
         ? [...prevHistory.slice(0, -1), newMode]
