@@ -25,12 +25,17 @@ export default function Appointment(props) {
     transition(SHOW);
   };
 
+  const cancel = () => {
+    props.cancelInterview(props.id);
+  };
+
   let display;
   if (props.interview) {
     display = (
       <Show
         student={props.interview.student}
         interviewer={props.interview.interviewer}
+        onDelete={cancel}
       />
     );
   } else if (props.mode === "CREATE") {
