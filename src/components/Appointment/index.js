@@ -12,13 +12,17 @@ export default function Appointment(props) {
   const EMPTY = "EMPTY";
   const SHOW = "SHOW";
   const CONFIRM = "CONFIRM";
+  const EDIT = "EDIT";
 
   const confirmDelete = () => {
-    console.log(props.mode);
     console.log(mode);
     transition(CONFIRM);
-    console.log("AFTER TRANSITION");
-    console.log(props.mode);
+    console.log(mode);
+  };
+
+  const edit = () => {
+    console.log("TRYING TO EDIT");
+    transition(EDIT);
     console.log(mode);
   };
 
@@ -45,13 +49,13 @@ export default function Appointment(props) {
   };
 
   let display;
-  if (props.interview && mode !== "CONFIRM") {
+  if (props.interview && mode !== "CONFIRM" && mode !== "EDIT") {
     display = (
       <Show
         student={props.interview.student}
         interviewer={props.interview.interviewer}
         onDelete={confirmDelete}
-        edit={props.edit}
+        onEdit={edit}
       />
     );
   } else if (props.mode === "CREATE" && !props.interview) {
@@ -69,8 +73,19 @@ export default function Appointment(props) {
     display = (
       <Confirm
         message={"Are you sure you want to delete?"}
-        onCancel={props.back}
+        onCancel={back}
         onConfirm={cancel}
+      />
+    );
+  } else if (mode === "EDIT" && props.interview) {
+    console.log(props.interview);
+    display = (
+      <Form
+        onCancel={back}
+        interviewers={props.interviewersForDay}
+        name={props.interview.student}
+        onSave={save}
+        bookInterview={props.bookInterview}
       />
     );
   } else {

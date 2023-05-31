@@ -87,10 +87,6 @@ export default function Application(props) {
     transition(CREATE);
   };
 
-  const edit = () => {
-    transition(EDIT);
-  };
-
   function bookInterview(id, interview) {
     const appointment = {
       ...state.appointments[id],
@@ -139,7 +135,6 @@ export default function Application(props) {
         mode={isActive ? mode : SHOW} // Pass the mode to the Appointment component only if it's active
         transition={transition}
         back={back}
-        edit={edit}
         onAdd={() => onAdd(appointment.id)} // Pass the appointment ID to onAdd
         bookInterview={bookInterview} // Pass the bookInterview function to the Appointment component
         cancelInterview={cancelInterview} // Pass the cancelInterview function to the Appointment component
