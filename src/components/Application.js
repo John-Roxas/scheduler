@@ -87,7 +87,7 @@ export default function Application(props) {
     transition(CREATE);
   };
 
-  function bookInterview(id, interview) {
+  async function bookInterview(id, interview) {
     const appointment = {
       ...state.appointments[id],
       interview: { ...interview },
@@ -102,9 +102,15 @@ export default function Application(props) {
       ...state,
       appointments,
     });
+
+    try {
+      await axios.put(`/api/appointments/${id}`, { interview });
+    } catch (error) {
+      console.error("Error updating appointment: ", error);
+    }
   }
 
-  const cancelInterview = (id) => {
+  async function cancelInterview(id) {
     // Create a new appointments object with the appointment's interview set to null
     const updatedAppointments = {
       ...state.appointments,
@@ -118,7 +124,13 @@ export default function Application(props) {
       ...prev,
       appointments: updatedAppointments,
     }));
-  };
+
+    try {
+      await axios.put(`/api/appointments/${id}`, { interview: null });
+    } catch (error) {
+      console.error("Error deleting appointment: ", error);
+    }
+  }
 
   const schedule = appointments.map((appointment) => {
     const interview = getInterview(state, appointment.interview);
