@@ -16,8 +16,8 @@ export default function Application(props) {
   const EMPTY = "EMPTY";
   const SHOW = "SHOW";
   const CREATE = "CREATE";
-  const CONFIRM = "CONFIRM";
-  const EDIT = "EDIT";
+  const ERROR_SAVE = "ERROR_SAVE";
+  const ERROR_DELETE = "ERROR_DELETE";
 
   const [state, setState] = useState({
     day: "Monday",
@@ -86,7 +86,7 @@ export default function Application(props) {
     setActiveAppointment(appointmentId); // Set the active appointment ID when the button is clicked
     transition(CREATE);
   };
-
+  console.log(appointments);
   async function bookInterview(id, interview) {
     const appointment = {
       ...state.appointments[id],
@@ -98,37 +98,36 @@ export default function Application(props) {
       [id]: appointment,
     };
 
-    setState({
-      ...state,
-      appointments,
-    });
-
     try {
       await axios.put(`/api/appointments/${id}`, { interview });
+      setState({
+        ...state,
+        appointments,
+      });
     } catch (error) {
-      console.error("Error updating appointment: ", error);
+      // console.error("Error updating appointment: ", error);
+      transition(ERROR_SAVE);
     }
   }
 
   async function cancelInterview(id) {
-    // Create a new appointments object with the appointment's interview set to null
-    const updatedAppointments = {
-      ...state.appointments,
-      [id]: {
-        ...state.appointments[id],
-        interview: null,
-      },
-    };
-
-    setState((prev) => ({
-      ...prev,
-      appointments: updatedAppointments,
-    }));
-
     try {
-      await axios.put(`/api/appointments/${id}`, { interview: null });
+      const response = await axios.delete(`/api/appointments/${id}`);
+      if (response.status === 204) {
+        const updatedAppointments = {
+          ...state.appointments,
+          [id]: {
+            ...state.appointments[id],
+            interview: null,
+          },
+        };
+        setState((prev) => ({
+          ...prev,
+          appointments: updatedAppointments,
+        }));
+      }
     } catch (error) {
-      console.error("Error deleting appointment: ", error);
+      console.log("Error canceling interview:", error);
     }
   }
 

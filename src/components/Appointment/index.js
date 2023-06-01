@@ -6,6 +6,7 @@ import Empty from "./Empty";
 import Form from "./Form"; // Import the Form component
 import Status from "./Status";
 import Confirm from "./Confirm";
+import Error from "./Error";
 import useVisualMode from "../../hooks/useVisualMode";
 
 export default function Appointment(props) {
@@ -15,11 +16,11 @@ export default function Appointment(props) {
   const EDIT = "EDIT";
   const SAVING = "SAVING";
   const DELETING = "DELETING";
+  const ERROR_SAVE = "ERROR_SAVE";
+  const ERROR_DELETE = "ERROR_DELETE";
 
   const confirmDelete = () => {
-    console.log(mode);
     transition(CONFIRM);
-    console.log(mode);
   };
 
   const edit = () => {
@@ -30,27 +31,35 @@ export default function Appointment(props) {
     props.interview ? SHOW : EMPTY
   );
 
-  const save = async (name, interviewer) => {
+  async function save(name, interviewer) {
     const interview = {
       student: name,
       interviewer,
     };
-    props.bookInterview(props.id, interview);
+    console.log(mode);
     transition(SAVING);
-    setTimeout(() => {
-      transition(SHOW);
-    }, 1000);
-  };
 
-  const cancel = () => {
-    transition(DELETING);
+    try {
+      console.log(mode);
+      await props.bookInterview(props.id, interview);
 
-    setTimeout(() => {
-      props.cancelInterview(props.id);
-      transition(EMPTY);
-      props.transition(EMPTY);
-    }, 1000);
-  };
+      await transition(SHOW);
+    } catch (error) {
+      console.error(error);
+      transition(ERROR_SAVE);
+    }
+  }
+
+  async function cancel() {
+    try {
+      await transition(DELETING);
+      await props.cancelInterview(props.id);
+      await transition(EMPTY);
+      await props.transition(EMPTY);
+    } catch (error) {
+      transition(ERROR_DELETE);
+    }
+  }
 
   let display;
   if (
@@ -58,7 +67,10 @@ export default function Appointment(props) {
     mode !== "CONFIRM" &&
     mode !== "EDIT" &&
     mode !== "DELETING" &&
-    mode !== "SAVING"
+    mode !== "SAVING" &&
+    mode !== "ERROR_SAVE" &&
+    mode !== "ERROR_DELETE" &&
+    props.mode !== "EMPTY"
   ) {
     display = (
       <Show
@@ -68,7 +80,11 @@ export default function Appointment(props) {
         onEdit={edit}
       />
     );
-  } else if (props.mode === "CREATE" && !props.interview) {
+  } else if (mode === "ERROR_SAVE") {
+    display = (
+      <Error message={"Could not create component!"} onClose={props.back} />
+    );
+  } else if (props.mode === "CREATE" && !props.interview && mode !== "SAVING") {
     // Render the Form component when mode is "CREATE"
 
     display = (
