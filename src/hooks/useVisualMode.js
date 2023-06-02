@@ -1,22 +1,32 @@
-// import { renderHook, act } from "@testing-library/react-hooks";
 import { useState, useCallback } from "react";
 
 const useVisualMode = (initialMode) => {
   const [history, setHistory] = useState([initialMode]);
 
   const transition = useCallback((newMode, replace = false) => {
-    setHistory((prevHistory) =>
-      replace
-        ? [...prevHistory.slice(0, -1), newMode]
-        : [...prevHistory, newMode]
-    );
+    setHistory((prevHistory) => {
+      let updatedHistory;
+      if (replace) {
+        updatedHistory = [
+          ...prevHistory.slice(0, prevHistory.length - 1),
+          newMode,
+        ];
+      } else {
+        updatedHistory = [...prevHistory, newMode];
+      }
+      return updatedHistory;
+    });
   }, []);
 
   const back = useCallback(() => {
-    if (history.length > 1) {
-      setHistory((prevHistory) => prevHistory.slice(0, -1));
-    }
-  }, [history]);
+    setHistory((prevHistory) => {
+      if (prevHistory.length > 1) {
+        const updatedHistory = prevHistory.slice(0, -1);
+        return updatedHistory;
+      }
+      return prevHistory;
+    });
+  }, []);
 
   return {
     mode: history[history.length - 1],

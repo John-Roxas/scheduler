@@ -11,8 +11,6 @@ export default function Form(props) {
     setInterviewer(null);
   };
 
-  console.log(props);
-
   const onSave = () => {
     props.onSave(student, interviewer);
   };

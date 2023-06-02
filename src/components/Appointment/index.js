@@ -9,69 +9,102 @@ import Confirm from "./Confirm";
 import Error from "./Error";
 import useVisualMode from "../../hooks/useVisualMode";
 
+const EMPTY = "EMPTY";
+const SHOW = "SHOW";
+const CONFIRM = "CONFIRM";
+const EDIT = "EDIT";
+const SAVING = "SAVING";
+const DELETING = "DELETING";
+const ERROR_SAVE = "ERROR_SAVE";
+const ERROR_DELETE = "ERROR_DELETE";
+const CREATE = "CREATE";
+
 export default function Appointment(props) {
-  const EMPTY = "EMPTY";
-  const SHOW = "SHOW";
-  const CONFIRM = "CONFIRM";
-  const EDIT = "EDIT";
-  const SAVING = "SAVING";
-  const DELETING = "DELETING";
-  const ERROR_SAVE = "ERROR_SAVE";
-  const ERROR_DELETE = "ERROR_DELETE";
-
-  const confirmDelete = () => {
-    transition(CONFIRM);
-  };
-
-  const edit = () => {
-    transition(EDIT);
-  };
-
   const { mode, transition, back } = useVisualMode(
     props.interview ? SHOW : EMPTY
   );
 
-  async function save(name, interviewer) {
+  console.log(mode);
+
+  // const onAdd = () => {
+  //   transition(CREATE);
+  // };
+
+  const confirmDelete = () => {
+    // TO DO: THROW THIS INTO SPECIFIC MODE
+    transition(CONFIRM);
+  };
+
+  const edit = () => {
+    // TO DO: THROW THIS INTO SPECIFIC MODE
+    transition(EDIT);
+  };
+
+  function save(name, interviewer) {
     const interview = {
       student: name,
       interviewer,
     };
-    console.log(mode);
+
     transition(SAVING);
+    let error = false;
+    props
+      .bookInterview(props.id, interview)
+      .then(() => {})
+      .catch(() => {
+        console.log("ERROR");
+        transition(ERROR_SAVE, true);
+        error = true;
+      })
+      .finally(() => {
+        if (error === false) {
+          transition(SHOW, true);
+        }
+      });
 
-    try {
-      console.log(mode);
-      await props.bookInterview(props.id, interview);
+    // let error;
 
-      await transition(SHOW);
-    } catch (error) {
-      console.error(error);
-      transition(ERROR_SAVE);
-    }
+    // try {
+    //   // console.log(mode);
+    //   await props.bookInterview(props.id, interview);
+    // } catch (error) {
+    //   console.log("CAUGHT ERROR");
+    //   error = true;
+    //   transition(ERROR_SAVE, true);
+    // }
+    // if (!error) {
+    //   console.log("TRYING TO SHOW");
+    //   transition(SHOW, true);
+    // }
   }
 
-  async function cancel() {
-    try {
-      await transition(DELETING);
-      await props.cancelInterview(props.id);
-      await transition(EMPTY);
-      await props.transition(EMPTY);
-    } catch (error) {
-      transition(ERROR_DELETE);
-    }
+  function cancel() {
+    transition(DELETING, true);
+
+    props
+      .cancelInterview(props.id)
+      // .then(() => transition(DELETING, true))
+      .then(() => transition(EMPTY, true))
+      .catch(() => {
+        transition(DELETING, true);
+        console.log("CAUGHT ERROR");
+        transition(ERROR_DELETE, true);
+      });
   }
+
+  // async function cancel() {
+  //   try {
+  //     await transition(DELETING);
+  //     await props.cancelInterview(props.id);
+  //     await transition(EMPTY);
+  //     await props.transition(EMPTY);
+  //   } catch (error) {
+  //     transition(ERROR_DELETE, true);
+  //   }
+  // }
 
   let display;
-  if (
-    props.interview &&
-    mode !== "CONFIRM" &&
-    mode !== "EDIT" &&
-    mode !== "DELETING" &&
-    mode !== "SAVING" &&
-    mode !== "ERROR_SAVE" &&
-    mode !== "ERROR_DELETE" &&
-    props.mode !== "EMPTY"
-  ) {
+  if (mode === "SHOW") {
     display = (
       <Show
         student={props.interview.student}
@@ -81,15 +114,15 @@ export default function Appointment(props) {
       />
     );
   } else if (mode === "ERROR_SAVE") {
-    display = (
-      <Error message={"Could not create component!"} onClose={props.back} />
-    );
-  } else if (props.mode === "CREATE" && !props.interview && mode !== "SAVING") {
+    display = <Error message={"Could not create component!"} onClose={back} />;
+  } else if (mode === "ERROR_DELETE") {
+    display = <Error message={"Could not delete component!"} onClose={back} />;
+  } else if (mode === "CREATE") {
     // Render the Form component when mode is "CREATE"
 
     display = (
       <Form
-        onCancel={props.back}
+        onCancel={back}
         interviewers={props.interviewersForDay}
         onSave={save}
         bookInterview={props.bookInterview}
@@ -103,8 +136,7 @@ export default function Appointment(props) {
         onConfirm={cancel}
       />
     );
-  } else if (mode === "EDIT" && props.interview) {
-    console.log(props.interview);
+  } else if (mode === "EDIT") {
     display = (
       <Form
         onCancel={back}
@@ -119,7 +151,7 @@ export default function Appointment(props) {
   } else if (mode === "SAVING") {
     display = <Status message={"Saving..."} />;
   } else {
-    display = <Empty onAdd={props.onAdd} />;
+    display = <Empty onAdd={() => transition(CREATE)} />;
   }
 
   return (

@@ -10,14 +10,18 @@ import {
   getInterview,
   getInterviewersForDay,
 } from "./helpers/selectors";
-import useVisualMode from "../hooks/useVisualMode";
+// import useVisualMode from "../hooks/useVisualMode";
 
 export default function Application(props) {
-  const EMPTY = "EMPTY";
-  const SHOW = "SHOW";
-  const CREATE = "CREATE";
-  const ERROR_SAVE = "ERROR_SAVE";
-  const ERROR_DELETE = "ERROR_DELETE";
+  // const EMPTY = "EMPTY";
+  // const SHOW = "SHOW";
+  // const CREATE = "CREATE";
+  // const ERROR_SAVE = "ERROR_SAVE";
+  // const ERROR_DELETE = "ERROR_DELETE";
+
+  // const { mode, transition, back } = useVisualMode(
+  //   props.interview ? SHOW : EMPTY
+  // );
 
   const [state, setState] = useState({
     day: "Monday",
@@ -28,9 +32,6 @@ export default function Application(props) {
 
   const [selectedDay, setSelectedDay] = useState("Monday");
   const [dailyAppointments, setDailyAppointments] = useState([]);
-  const { mode, transition, back } = useVisualMode(
-    props.interview ? SHOW : EMPTY
-  );
 
   const [activeAppointment, setActiveAppointment] = useState(null); // Track the active appointment ID
 
@@ -71,7 +72,10 @@ export default function Application(props) {
         );
         setDailyAppointments(appointmentsForDay);
       } catch (error) {
-        console.error("Error fetching data: ", error);
+        console.error(
+          "Error fetching data with getAppointmentsForDay: ",
+          error
+        );
       }
     };
 
@@ -82,59 +86,69 @@ export default function Application(props) {
 
   const appointments = getAppointmentsForDay(state, selectedDay);
 
-  const onAdd = (appointmentId) => {
-    setActiveAppointment(appointmentId); // Set the active appointment ID when the button is clicked
-    transition(CREATE);
-  };
-  console.log(appointments);
-  async function bookInterview(id, interview) {
-    const appointment = {
-      ...state.appointments[id],
-      interview: { ...interview },
-    };
+  function bookInterview(id, interview) {
+    return new Promise((resolve, reject) => {
+      const appointment = {
+        ...state.appointments[id],
+        interview: { ...interview },
+      };
 
-    const appointments = {
-      ...state.appointments,
-      [id]: appointment,
-    };
+      const appointments = {
+        ...state.appointments,
+        [id]: appointment,
+      };
 
-    try {
-      await axios.put(`/api/appointments/${id}`, { interview });
-      setState({
-        ...state,
-        appointments,
-      });
-    } catch (error) {
-      // console.error("Error updating appointment: ", error);
-      transition(ERROR_SAVE);
-    }
+      axios
+        .put(`/api/appointments/${id}`, { interview })
+        .then(() => {
+          setState({
+            ...state,
+            appointments,
+          });
+
+          resolve(); // Resolve the promise when the update is successful
+        })
+        .catch((error) => {
+          console.error("Error updating appointment: ", error);
+          reject(error); // Reject the promise when an error occurs
+        });
+    });
   }
 
-  async function cancelInterview(id) {
-    try {
-      const response = await axios.delete(`/api/appointments/${id}`);
-      if (response.status === 204) {
-        const updatedAppointments = {
-          ...state.appointments,
-          [id]: {
-            ...state.appointments[id],
-            interview: null,
-          },
-        };
-        setState((prev) => ({
-          ...prev,
-          appointments: updatedAppointments,
-        }));
-      }
-    } catch (error) {
-      console.log("Error canceling interview:", error);
-    }
+  function cancelInterview(id) {
+    return new Promise((resolve, reject) => {
+      axios
+        .delete(`/api/appointments/${id}`)
+        .then(() => {
+          const updatedAppointments = {
+            ...state.appointments,
+            [id]: {
+              ...state.appointments[id],
+              interview: null,
+            },
+          };
+
+          setState((prevState) => ({
+            ...prevState,
+            appointments: updatedAppointments,
+          }));
+
+          resolve(); // Resolve the promise when the deletion is successful
+        })
+        .catch((error) => {
+          console.error("Error canceling interview:", error);
+
+          reject(error); // Reject the promise when an error occurs
+        });
+    });
   }
 
   const schedule = appointments.map((appointment) => {
     const interview = getInterview(state, appointment.interview);
-    const isActive = appointment.id === activeAppointment; // Check if the current appointment is active
-
+    let isActive = false;
+    if (appointment.id === activeAppointment) {
+      isActive = true;
+    }
     return (
       <Appointment
         key={appointment.id}
@@ -143,10 +157,10 @@ export default function Application(props) {
         interview={interview}
         interviewersForDay={interviewersForDay}
         interviewers={state.interviewers} // Pass the interviewers prop to the Appointment component
-        mode={isActive ? mode : SHOW} // Pass the mode to the Appointment component only if it's active
-        transition={transition}
-        back={back}
-        onAdd={() => onAdd(appointment.id)} // Pass the appointment ID to onAdd
+        // mode={isActive ? mode : SHOW} // Pass the mode to the Appointment component only if it's active
+        // transition={transition}
+        // back={back}
+
         bookInterview={bookInterview} // Pass the bookInterview function to the Appointment component
         cancelInterview={cancelInterview} // Pass the cancelInterview function to the Appointment component
       />
