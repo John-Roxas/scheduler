@@ -10,19 +10,8 @@ import {
   getInterview,
   getInterviewersForDay,
 } from "./helpers/selectors";
-// import useVisualMode from "../hooks/useVisualMode";
 
 export default function Application(props) {
-  // const EMPTY = "EMPTY";
-  // const SHOW = "SHOW";
-  // const CREATE = "CREATE";
-  // const ERROR_SAVE = "ERROR_SAVE";
-  // const ERROR_DELETE = "ERROR_DELETE";
-
-  // const { mode, transition, back } = useVisualMode(
-  //   props.interview ? SHOW : EMPTY
-  // );
-
   const [state, setState] = useState({
     day: "Monday",
     days: [],
