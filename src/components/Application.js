@@ -140,7 +140,13 @@ export default function Application(props) {
     cancelInterview,
     interviewersForDay,
     dailyAppointments,
+    spotsRemaining,
   } = useApplicationData();
+  console.log(dailyAppointments);
+
+  console.log(spotsRemaining());
+
+  console.log(state);
 
   const schedule = dailyAppointments.map((appointment) => {
     const interview = getInterview(state, appointment.interview);
@@ -155,7 +161,7 @@ export default function Application(props) {
         // mode={isActive ? mode : SHOW} // Pass the mode to the Appointment component only if it's active
         // transition={transition}
         // back={back}
-
+        spotsRemaining={spotsRemaining}
         bookInterview={bookInterview} // Pass the bookInterview function to the Appointment component
         cancelInterview={cancelInterview} // Pass the cancelInterview function to the Appointment component
       />

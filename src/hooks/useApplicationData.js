@@ -102,6 +102,13 @@ export default function useApplicationData() {
 
   const dailyAppointments = getAppointmentsForDay(state, state.day);
 
+  const spotsRemaining = () => {
+    const spots = dailyAppointments.filter(
+      (appointment) => !appointment.interview
+    ).length;
+    return spots;
+  };
+
   return {
     state,
     setDay,
@@ -109,5 +116,6 @@ export default function useApplicationData() {
     cancelInterview,
     interviewersForDay,
     dailyAppointments,
+    spotsRemaining,
   };
 }
