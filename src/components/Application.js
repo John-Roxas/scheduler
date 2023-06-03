@@ -4,6 +4,7 @@ import "components/Application.scss";
 import DayListItem from "components/DayListItem";
 import DayList from "components/DayList";
 import Appointment from "./Appointment";
+import useApplicationData from "../hooks/useApplicationData";
 
 import {
   getAppointmentsForDay,
@@ -12,132 +13,137 @@ import {
 } from "./helpers/selectors";
 
 export default function Application(props) {
-  const [state, setState] = useState({
-    day: "Monday",
-    days: [],
-    appointments: {},
-    interviewers: {},
-  });
+  // const [state, setState] = useState({
+  //   day: "Monday",
+  //   days: [],
+  //   appointments: {},
+  //   interviewers: {},
+  // });
 
-  const [selectedDay, setSelectedDay] = useState("Monday");
-  const [dailyAppointments, setDailyAppointments] = useState([]);
+  // const [selectedDay, setSelectedDay] = useState("Monday");
+  // const [dailyAppointments, setDailyAppointments] = useState([]);
 
-  const [activeAppointment, setActiveAppointment] = useState(null); // Track the active appointment ID
+  // const [activeAppointment, setActiveAppointment] = useState(null); // Track the active appointment ID
 
-  const setDay = (day) => {
-    setState((prev) => ({ ...prev, day }));
-    setSelectedDay(day);
+  // const setDay = (day) => {
+  //   setState((prev) => ({ ...prev, day }));
+  //   setSelectedDay(day);
 
-    const dailyAppointments = getAppointmentsForDay(
-      {
-        appointments: state.appointments,
-        days: state.days,
-      },
-      day
-    );
-    setDailyAppointments(dailyAppointments);
-  };
+  //   const dailyAppointments = getAppointmentsForDay(
+  //     {
+  //       appointments: state.appointments,
+  //       days: state.days,
+  //     },
+  //     day
+  //   );
+  //   setDailyAppointments(dailyAppointments);
+  // };
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const appointmentsResponse = await axios.get("/api/appointments");
-        const daysResponse = await axios.get("/api/days");
-        const interviewersResponse = await axios.get("/api/interviewers");
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     try {
+  //       const appointmentsResponse = await axios.get("/api/appointments");
+  //       const daysResponse = await axios.get("/api/days");
+  //       const interviewersResponse = await axios.get("/api/interviewers");
 
-        setState((prev) => ({
-          ...prev,
-          appointments: appointmentsResponse.data,
-          days: daysResponse.data,
-          interviewers: interviewersResponse.data,
-        }));
+  //       setState((prev) => ({
+  //         ...prev,
+  //         appointments: appointmentsResponse.data,
+  //         days: daysResponse.data,
+  //         interviewers: interviewersResponse.data,
+  //       }));
 
-        const appointmentsForDay = getAppointmentsForDay(
-          {
-            appointments: appointmentsResponse.data,
-            days: daysResponse.data,
-          },
-          state.day
-        );
-        setDailyAppointments(appointmentsForDay);
-      } catch (error) {
-        console.error(
-          "Error fetching data with getAppointmentsForDay: ",
-          error
-        );
-      }
-    };
+  //       const appointmentsForDay = getAppointmentsForDay(
+  //         {
+  //           appointments: appointmentsResponse.data,
+  //           days: daysResponse.data,
+  //         },
+  //         state.day
+  //       );
+  //       setDailyAppointments(appointmentsForDay);
+  //     } catch (error) {
+  //       console.error(
+  //         "Error fetching data with getAppointmentsForDay: ",
+  //         error
+  //       );
+  //     }
+  //   };
 
-    fetchData();
-  }, []);
+  //   fetchData();
+  // }, []);
 
-  const interviewersForDay = getInterviewersForDay(selectedDay, state);
+  // const interviewersForDay = getInterviewersForDay(selectedDay, state);
 
-  const appointments = getAppointmentsForDay(state, selectedDay);
+  // const appointments = getAppointmentsForDay(state, selectedDay);
 
-  function bookInterview(id, interview) {
-    return new Promise((resolve, reject) => {
-      const appointment = {
-        ...state.appointments[id],
-        interview: { ...interview },
-      };
+  // function bookInterview(id, interview) {
+  //   return new Promise((resolve, reject) => {
+  //     const appointment = {
+  //       ...state.appointments[id],
+  //       interview: { ...interview },
+  //     };
 
-      const appointments = {
-        ...state.appointments,
-        [id]: appointment,
-      };
+  //     const appointments = {
+  //       ...state.appointments,
+  //       [id]: appointment,
+  //     };
 
-      axios
-        .put(`/api/appointments/${id}`, { interview })
-        .then(() => {
-          setState({
-            ...state,
-            appointments,
-          });
+  //     axios
+  //       .put(`/api/appointments/${id}`, { interview })
+  //       .then(() => {
+  //         setState({
+  //           ...state,
+  //           appointments,
+  //         });
 
-          resolve(); // Resolve the promise when the update is successful
-        })
-        .catch((error) => {
-          console.error("Error updating appointment: ", error);
-          reject(error); // Reject the promise when an error occurs
-        });
-    });
-  }
+  //         resolve(); // Resolve the promise when the update is successful
+  //       })
+  //       .catch((error) => {
+  //         console.error("Error updating appointment: ", error);
+  //         reject(error); // Reject the promise when an error occurs
+  //       });
+  //   });
+  // }
 
-  function cancelInterview(id) {
-    return new Promise((resolve, reject) => {
-      axios
-        .delete(`/api/appointments/${id}`)
-        .then(() => {
-          const updatedAppointments = {
-            ...state.appointments,
-            [id]: {
-              ...state.appointments[id],
-              interview: null,
-            },
-          };
+  // function cancelInterview(id) {
+  //   return new Promise((resolve, reject) => {
+  //     axios
+  //       .delete(`/api/appointments/${id}`)
+  //       .then(() => {
+  //         const updatedAppointments = {
+  //           ...state.appointments,
+  //           [id]: {
+  //             ...state.appointments[id],
+  //             interview: null,
+  //           },
+  //         };
 
-          setState((prevState) => ({
-            ...prevState,
-            appointments: updatedAppointments,
-          }));
+  //         setState((prevState) => ({
+  //           ...prevState,
+  //           appointments: updatedAppointments,
+  //         }));
 
-          resolve(); // Resolve the promise when the deletion is successful
-        })
-        .catch((error) => {
-          console.error("Error canceling interview:", error);
+  //         resolve(); // Resolve the promise when the deletion is successful
+  //       })
+  //       .catch((error) => {
+  //         console.error("Error canceling interview:", error);
 
-          reject(error); // Reject the promise when an error occurs
-        });
-    });
-  }
+  //         reject(error); // Reject the promise when an error occurs
+  //       });
+  //   });
+  // }
 
-  const schedule = appointments.map((appointment) => {
+  const {
+    state,
+    setDay,
+    bookInterview,
+    cancelInterview,
+    interviewersForDay,
+    dailyAppointments,
+  } = useApplicationData();
+
+  const schedule = dailyAppointments.map((appointment) => {
     const interview = getInterview(state, appointment.interview);
-    let isActive = false;
-    if (appointment.id === activeAppointment) {
-      isActive = true;
-    }
     return (
       <Appointment
         key={appointment.id}
