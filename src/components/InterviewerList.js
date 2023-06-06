@@ -2,10 +2,16 @@ import React, { useState } from "react";
 import classNames from "classnames";
 import InterviewerListItem from "components/InterviewerListItem";
 
+import PropTypes from "prop-types";
+
 import "components/InterviewerList.scss";
 
 export default function InterviewerList(props) {
   const { interviewers, value, onChange } = props;
+
+  InterviewerList.propTypes = {
+    interviewers: PropTypes.array.isRequired,
+  };
 
   const interviewerItems = Object.values(interviewers).map((interviewer) => {
     return (

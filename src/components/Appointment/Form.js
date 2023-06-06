@@ -12,7 +12,9 @@ export default function Form(props) {
   };
 
   const onSave = () => {
-    props.onSave(student, interviewer);
+    if (student && interviewer) {
+      props.onSave(student, interviewer);
+    }
   };
 
   const cancel = () => {

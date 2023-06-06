@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import axios from "axios";
 import {
   getAppointmentsForDay,
@@ -19,16 +19,43 @@ export default function useApplicationData() {
     setState((prev) => ({ ...prev, day }));
   };
 
-  const spotsRemaining = () => {
-    const dailyAppointments = getAppointmentsForDay(state, state.day);
-    const spots = dailyAppointments.filter(
-      (appointment) => !appointment.interview
-    ).length;
-    setState((prev) => ({
-      ...prev,
-      spots,
-    }));
+  const spotsRemaining = (state, appointments) => {
+    // const dailyAppointments = getAppointmentsForDay(state, state.day);
+    // filter returns an array. length of array is # of spots
+    // const spots = dailyAppointments.filter(
+    //   (appointment) => !appointment.interview
+    // ).length;
+    // setState((prev) => ({
+    //   ...prev,
+    //   spots,
+    // }));
+    const findResult = state.days.find((item) => item.name === state.day);
+    console.log("TEST:", findResult);
+
+    let spots = 0;
+    findResult.appointments.forEach((id) => {
+      if (!appointments[id].interview) {
+        spots++;
+      }
+    });
+
+    console.log(spots);
+
+    const result = { ...findResult, spots: spots };
+    const result2 = state.days.map((day) => {
+      if (day.name === state.day) {
+        return result;
+      } else {
+        return day;
+      }
+    });
+    console.log(result2);
+    return result2;
   };
+
+  // useEffect(() => {
+  //   spotsRemaining();
+  // }, [state.spots]);
 
   const bookInterview = (id, interview) => {
     return new Promise((resolve, reject) => {
@@ -41,14 +68,29 @@ export default function useApplicationData() {
         ...state.appointments,
         [id]: appointment,
       };
+      // console.log(state.spots);
+
+      // console.log(spotsRemaining());
 
       axios
         .put(`/api/appointments/${id}`, { interview })
         .then(() => {
+          // const spots = state.days.map((day) => {
+          //   if (day.name === state.day) {
+          //     return {
+          //       ...day,
+          //       spots: state.spots,
+          //     };
+          //   } else {
+          //     return day;
+          //   }
+          // });
           setState((prev) => ({
             ...prev,
             appointments,
+            days: spotsRemaining(state, appointments),
           }));
+          // console.log(spotsRemaining());
 
           resolve();
         })
@@ -57,6 +99,7 @@ export default function useApplicationData() {
           console.error("Error updating appointment: ", error);
           reject(error);
         });
+      // console.log(spotsRemaining());
     });
   };
 
@@ -76,11 +119,11 @@ export default function useApplicationData() {
           setState((prev) => ({
             ...prev,
             appointments: updatedAppointments,
+            days: spotsRemaining(state, updatedAppointments),
           }));
 
           resolve();
         })
-        // .then(() => spotsRemaining())
         .catch((error) => {
           console.error("Error canceling interview:", error);
           reject(error);
@@ -104,23 +147,21 @@ export default function useApplicationData() {
           days: daysResponse.data,
           interviewers: interviewersResponse.data,
         }));
-        // console.log("HERE!");
-
-        // spotsRemaining();
-        console.log(state.spots);
       } catch (error) {
         console.error("Error fetching data: ", error);
       }
     };
+
+    // spotsRemaining();
 
     fetchData();
   }, []);
 
   // now the number of spots will update whenever state.appointments and state.day changes. I think this covers
   // bost cases of deleting and creating appointment
-  useEffect(() => {
-    spotsRemaining();
-  }, [state.appointments, state.day]);
+  // useEffect(() => {
+  //   spotsRemaining();
+  // }, [state.appointments, state.day]);
 
   const interviewersForDay = getInterviewersForDay(state.day, state);
 
@@ -133,5 +174,6 @@ export default function useApplicationData() {
     cancelInterview,
     interviewersForDay,
     dailyAppointments,
+    // spotsRemaining,
   };
 }

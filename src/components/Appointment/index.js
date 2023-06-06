@@ -24,8 +24,6 @@ export default function Appointment(props) {
     props.interview ? SHOW : EMPTY
   );
 
-  console.log(mode);
-
   // const onAdd = () => {
   //   transition(CREATE);
   // };
@@ -61,21 +59,6 @@ export default function Appointment(props) {
           transition(SHOW, true);
         }
       });
-
-    // let error;
-
-    // try {
-    //   // console.log(mode);
-    //   await props.bookInterview(props.id, interview);
-    // } catch (error) {
-    //   console.log("CAUGHT ERROR");
-    //   error = true;
-    //   transition(ERROR_SAVE, true);
-    // }
-    // if (!error) {
-    //   console.log("TRYING TO SHOW");
-    //   transition(SHOW, true);
-    // }
   }
 
   function cancel() {
@@ -87,7 +70,6 @@ export default function Appointment(props) {
       .then(() => transition(EMPTY, true))
       .catch(() => {
         transition(DELETING, true);
-        console.log("CAUGHT ERROR");
         transition(ERROR_DELETE, true);
       });
   }
@@ -157,6 +139,7 @@ export default function Appointment(props) {
   return (
     <article className="appointment">
       <Header time={props.time} />
+      {/* <p>TEST</p> */}
       {display}
     </article>
   );

@@ -1,18 +1,17 @@
-import React, { useState } from "react";
+import React from "react";
 import classNames from "classnames";
 import DayListItem from "components/DayListItem";
 
 import "components/DayList.scss";
 
-export default function DayList(props) {
-  const { days, value, onChange, spotsRemaining } = props;
+const DayList = (props) => {
+  const { days, value, onChange } = props;
 
   const handleDayClick = (dayName) => {
     onChange(dayName); // Call the onChange function passed from the parent component
   };
 
   const listItems = days.map((day) => {
-    // const spots = spotsRemaining(day); // Call the spotsRemaining function with the day object
     return (
       <DayListItem
         key={day.id}
@@ -25,4 +24,6 @@ export default function DayList(props) {
   });
 
   return <ul>{listItems}</ul>;
-}
+};
+
+export default DayList;

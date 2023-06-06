@@ -22,14 +22,10 @@ export default function Application(props) {
     dailyAppointments,
     spotsRemaining,
   } = useApplicationData();
-  // console.log(dailyAppointments);
-
-  // console.log(spotsRemaining());
-  // spotsRemaining();
-  console.log(state.spots);
 
   const schedule = dailyAppointments.map((appointment) => {
     const interview = getInterview(state, appointment.interview);
+    // console.log("currently on appointment: ", appointment);
     return (
       <Appointment
         key={appointment.id}
@@ -47,6 +43,8 @@ export default function Application(props) {
     );
   });
 
+  // console.log(state.spots);
+
   return (
     <main className="layout">
       <section className="sidebar">
@@ -61,7 +59,7 @@ export default function Application(props) {
             days={state.days}
             value={state.day}
             onChange={setDay}
-            spots={state.spots}
+            // spots={state.spots}
           />
         </nav>
         <img
@@ -70,7 +68,10 @@ export default function Application(props) {
           alt="Lighthouse Labs"
         />
       </section>
-      <section className="schedule">{schedule}</section>
+      <section className="schedule">
+        {schedule}
+        <Appointment time={"5pm"} />
+      </section>
     </main>
   );
 }
