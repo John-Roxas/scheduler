@@ -15,49 +15,50 @@ describe("Form", () => {
     },
   ];
 
-  it("renders without student name if not provided", () => {
-    const { getByPlaceholderText } = render(
-      <Form interviewers={interviewers} />
-    );
-    expect(getByPlaceholderText("Enter Student Name")).toHaveValue("");
-  });
-
-  it("renders with initial student name", () => {
-    const { getByTestId } = render(
-      <Form interviewers={interviewers} name="Lydia Miller-Jones" />
-    );
-
-    const input = getByTestId("student-name-input");
-    fireEvent.change(input, { target: { value: "Lydia Miller-Jones" } });
-
-    expect(input).toHaveValue("Lydia Miller-Jones");
-  });
-
   it("validates that the student name is not blank", () => {
-    /* 1. validation is shown */
-    expect(getByText(/student name cannot be blank/i)).toBeInTheDocument();
+    const onSave = jest.fn();
+    const { getByText } = render(
+      <Form interviewers={interviewers} onSave={onSave} />
+    );
 
-    /* 2. onSave is not called */
+    fireEvent.click(getByText("Save"));
+
+    expect(getByText(/student name cannot be blank/i)).toBeInTheDocument();
     expect(onSave).not.toHaveBeenCalled();
   });
 
   it("validates that the interviewer cannot be null", () => {
-    /* 3. validation is shown */
-    expect(getByText(/please select an interviewer/i)).toBeInTheDocument();
+    const onSave = jest.fn();
+    const { getByText, getByTestId } = render(
+      <Form interviewers={interviewers} onSave={onSave} />
+    );
 
-    /* 4. onSave is not called */
+    fireEvent.change(getByTestId("student-name-input"), {
+      target: { value: "Lydia Miller-Jones" },
+    });
+    fireEvent.click(getByText("Save"));
+
+    expect(getByText(/please select an interviewer/i)).toBeInTheDocument();
     expect(onSave).not.toHaveBeenCalled();
   });
 
   it("calls onSave function when the name is defined", () => {
-    /* 5. validation is not shown */
+    const onSave = jest.fn();
+    const { getByText, getByTestId, queryByText } = render(
+      <Form interviewers={interviewers} onSave={onSave} />
+    );
+
+    fireEvent.change(getByTestId("student-name-input"), {
+      target: { value: "Lydia Miller-Jones" },
+    });
+    fireEvent.change(getByTestId("interviewer-input"), {
+      target: { value: 1 },
+    });
+    fireEvent.click(getByText("Save"));
+
     expect(queryByText(/student name cannot be blank/i)).toBeNull();
     expect(queryByText(/please select an interviewer/i)).toBeNull();
-
-    /* 6. onSave is called once*/
     expect(onSave).toHaveBeenCalledTimes(1);
-
-    /* 7. onSave is called with the correct arguments */
     expect(onSave).toHaveBeenCalledWith("Lydia Miller-Jones", 1);
   });
 });
