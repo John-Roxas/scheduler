@@ -1,7 +1,7 @@
-import axios from "axios";
+// import axios from "axios";
 import React, { useState, useEffect } from "react";
 import "components/Application.scss";
-import DayListItem from "components/DayListItem";
+// import DayListItem from "components/DayListItem";
 import DayList from "components/DayList";
 import Appointment from "./Appointment";
 import useApplicationData from "../hooks/useApplicationData";
@@ -20,7 +20,6 @@ export default function Application(props) {
     cancelInterview,
     interviewersForDay,
     dailyAppointments,
-    spotsRemaining,
   } = useApplicationData();
 
   const schedule = dailyAppointments.map((appointment) => {

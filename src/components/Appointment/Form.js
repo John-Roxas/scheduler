@@ -17,6 +17,8 @@ export default function Form(props) {
     }
   };
 
+  // console.log(props.interviewersForDay);
+
   const cancel = () => {
     props.onCancel();
   };
@@ -35,11 +37,12 @@ export default function Form(props) {
         <form autoComplete="off">
           <input
             className="appointment__create-input text--semi-bold"
-            name={student.name}
+            name="student"
             type="text"
             placeholder={placeholder}
             value={student}
             onChange={(event) => setStudent(event.target.value)}
+            data-testid="student-name-input"
           />
         </form>
         <InterviewerList

@@ -79,7 +79,11 @@ describe("getInterviewersForDay", () => {
 
   test("returns an array containing the correct interviewer objects", () => {
     const result = getInterviewersForDay("Monday", state);
-    expect(result).toEqual(["John", "Jane", "Alex"]);
+    expect(result).toEqual([
+      { id: 1, name: "John" },
+      { id: 2, name: "Jane" },
+      { id: 3, name: "Alex" },
+    ]);
   });
 
   test("returns an empty array when the days data is empty", () => {
