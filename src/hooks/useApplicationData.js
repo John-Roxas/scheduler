@@ -53,12 +53,8 @@ export default function useApplicationData() {
     return result2;
   };
 
-  // useEffect(() => {
-  //   spotsRemaining();
-  // }, [state.spots]);
-
-  const bookInterview = (id, interview) => {
-    return new Promise((resolve, reject) => {
+  const bookInterview = async (id, interview) => {
+    try {
       const appointment = {
         ...state.appointments[id],
         interview: { ...interview },
@@ -68,68 +64,19 @@ export default function useApplicationData() {
         ...state.appointments,
         [id]: appointment,
       };
-      // console.log(state.spots);
 
-      // console.log(spotsRemaining());
+      await axios.put(`/api/appointments/${id}`, { interview });
 
-      axios
-        .put(`/api/appointments/${id}`, { interview })
-        .then(() => {
-          // const spots = state.days.map((day) => {
-          //   if (day.name === state.day) {
-          //     return {
-          //       ...day,
-          //       spots: state.spots,
-          //     };
-          //   } else {
-          //     return day;
-          //   }
-          // });
-          setState((prev) => ({
-            ...prev,
-            appointments,
-            days: spotsRemaining(state, appointments),
-          }));
-          // console.log(spotsRemaining());
-
-          resolve();
-        })
-        // .then(() => spotsRemaining())
-        .catch((error) => {
-          // console.error("Error updating appointment: ", error);
-          reject(error);
-        });
-      // console.log(spotsRemaining());
-    });
+      setState((prev) => ({
+        ...prev,
+        appointments,
+        days: spotsRemaining(state, appointments),
+      }));
+    } catch (error) {
+      console.error("Error updating appointment:", error);
+      throw error;
+    }
   };
-
-  // const cancelInterview = (id) => {
-  //   return new Promise((resolve, reject) => {
-  //     axios
-  //       .delete(`/api/appointments/${id}`)
-  //       .then(() => {
-  //         const updatedAppointments = {
-  //           ...state.appointments,
-  //           [id]: {
-  //             ...state.appointments[id],
-  //             interview: null,
-  //           },
-  //         };
-
-  //         setState((prev) => ({
-  //           ...prev,
-  //           appointments: updatedAppointments,
-  //           days: spotsRemaining(state, updatedAppointments),
-  //         }));
-
-  //         resolve();
-  //       })
-  //       .catch((error) => {
-  //         console.error("Error canceling interview:", error);
-  //         reject(error);
-  //       });
-  //   });
-  // };
 
   const cancelInterview = async (id) => {
     try {
