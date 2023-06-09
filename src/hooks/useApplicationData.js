@@ -96,7 +96,7 @@ export default function useApplicationData() {
         })
         // .then(() => spotsRemaining())
         .catch((error) => {
-          console.error("Error updating appointment: ", error);
+          // console.error("Error updating appointment: ", error);
           reject(error);
         });
       // console.log(spotsRemaining());
@@ -148,7 +148,7 @@ export default function useApplicationData() {
           interviewers: interviewersResponse.data,
         }));
       } catch (error) {
-        console.error("Error fetching data: ", error);
+        // console.error("Error fetching data: ", error);
       }
     };
 

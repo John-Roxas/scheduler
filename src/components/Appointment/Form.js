@@ -17,10 +17,15 @@ export default function Form(props) {
   };
 
   const onSave = () => {
-    if (!student) {
+    if (!student && !interviewer) {
       setStudentError(true);
+      setInterviewerError(true);
+    } else if (!student) {
+      setStudentError(true);
+      setInterviewerError(false);
     } else if (!interviewer) {
       setInterviewerError(true);
+      setStudentError(false);
     } else {
       props.onSave(student, interviewer);
       setStudentError(false);
@@ -29,13 +34,14 @@ export default function Form(props) {
   };
 
   const cancel = () => {
+    reset();
     props.onCancel();
   };
 
   let placeholder;
 
-  if (props.name) {
-    placeholder = props.name;
+  if (props.student) {
+    placeholder = props.student;
   } else {
     placeholder = "Enter Student Name";
   }
