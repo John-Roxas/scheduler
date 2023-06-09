@@ -103,32 +103,55 @@ export default function useApplicationData() {
     });
   };
 
-  const cancelInterview = (id) => {
-    return new Promise((resolve, reject) => {
-      axios
-        .delete(`/api/appointments/${id}`)
-        .then(() => {
-          const updatedAppointments = {
-            ...state.appointments,
-            [id]: {
-              ...state.appointments[id],
-              interview: null,
-            },
-          };
+  // const cancelInterview = (id) => {
+  //   return new Promise((resolve, reject) => {
+  //     axios
+  //       .delete(`/api/appointments/${id}`)
+  //       .then(() => {
+  //         const updatedAppointments = {
+  //           ...state.appointments,
+  //           [id]: {
+  //             ...state.appointments[id],
+  //             interview: null,
+  //           },
+  //         };
 
-          setState((prev) => ({
-            ...prev,
-            appointments: updatedAppointments,
-            days: spotsRemaining(state, updatedAppointments),
-          }));
+  //         setState((prev) => ({
+  //           ...prev,
+  //           appointments: updatedAppointments,
+  //           days: spotsRemaining(state, updatedAppointments),
+  //         }));
 
-          resolve();
-        })
-        .catch((error) => {
-          console.error("Error canceling interview:", error);
-          reject(error);
-        });
-    });
+  //         resolve();
+  //       })
+  //       .catch((error) => {
+  //         console.error("Error canceling interview:", error);
+  //         reject(error);
+  //       });
+  //   });
+  // };
+
+  const cancelInterview = async (id) => {
+    try {
+      await axios.delete(`/api/appointments/${id}`);
+
+      const updatedAppointments = {
+        ...state.appointments,
+        [id]: {
+          ...state.appointments[id],
+          interview: null,
+        },
+      };
+
+      setState((prev) => ({
+        ...prev,
+        appointments: updatedAppointments,
+        days: spotsRemaining(state, updatedAppointments),
+      }));
+    } catch (error) {
+      console.error("Error canceling interview:", error);
+      throw error;
+    }
   };
 
   useEffect(() => {
