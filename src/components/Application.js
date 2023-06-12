@@ -24,7 +24,7 @@ export default function Application(props) {
 
   const schedule = dailyAppointments.map((appointment) => {
     const interview = getInterview(state, appointment.interview);
-    // console.log("currently on appointment: ", appointment);
+
     return (
       <Appointment
         key={appointment.id}
@@ -41,8 +41,6 @@ export default function Application(props) {
       />
     );
   });
-
-  // console.log(state.spots);
 
   return (
     <main className="layout">

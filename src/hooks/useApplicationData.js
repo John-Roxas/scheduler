@@ -30,7 +30,6 @@ export default function useApplicationData() {
     //   spots,
     // }));
     const findResult = state.days.find((item) => item.name === state.day);
-    console.log("TEST:", findResult);
 
     let spots = 0;
     findResult.appointments.forEach((id) => {
@@ -38,8 +37,6 @@ export default function useApplicationData() {
         spots++;
       }
     });
-
-    console.log(spots);
 
     const result = { ...findResult, spots: spots };
     const result2 = state.days.map((day) => {
@@ -49,7 +46,7 @@ export default function useApplicationData() {
         return day;
       }
     });
-    console.log(result2);
+
     return result2;
   };
 

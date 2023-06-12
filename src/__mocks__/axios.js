@@ -54,6 +54,15 @@ const fixtures = {
 };
 
 export default {
+  put: jest.fn((url, data) => {
+    if (url === "/api/appointments") {
+      return Promise.resolve({
+        status: 203,
+        statusText: "No Content",
+      });
+    }
+  }),
+
   get: jest.fn((url) => {
     if (url === "/api/days") {
       return Promise.resolve({
