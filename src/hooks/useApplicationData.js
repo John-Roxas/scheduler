@@ -70,7 +70,7 @@ export default function useApplicationData() {
         days: spotsRemaining(state, appointments),
       }));
     } catch (error) {
-      console.error("Error updating appointment:", error);
+      // console.error("Error updating appointment:", error);
       throw error;
     }
   };
@@ -93,7 +93,6 @@ export default function useApplicationData() {
         days: spotsRemaining(state, updatedAppointments),
       }));
     } catch (error) {
-      console.error("Error canceling interview:", error);
       throw error;
     }
   };
