@@ -20,12 +20,14 @@ export default function Show(props) {
             src="images/edit.png"
             alt="Edit"
             onClick={props.onEdit}
+            data-testid="editbutton"
           />
           <img
             className="appointment__actions-button"
             src="images/trash.png"
             alt="Delete"
             onClick={confirmDelete}
+            data-testid="deletebutton"
           />
         </section>
       </section>
