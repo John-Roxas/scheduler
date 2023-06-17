@@ -13,7 +13,7 @@ describe("Navigation", () => {
   it("should book an interview", () => {
     cy.visit("/");
     cy.get("main.appointment__add") // Select all parent containers
-      .should("be.visible")
+      .should("be.visible") // Ensure it's only selecting the visible ones
       .find("img.appointment__add-button:visible:first") // Find the first visible image button within the chosen parent container
       .click({ multiple: true });
     cy.get("[data-testid=student-name-input]").type(testName);
