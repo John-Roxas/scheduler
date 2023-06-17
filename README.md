@@ -3,6 +3,9 @@
 This is a single-page application built with React that allows users to book, edit and cancel interviews for each day of the week. 
 
 ## Screenshots 
+![Landing Page](./screenshots/FrontPage.jpg)
+![New Appointment](./screenshots/NewAppointment.jpg)
+![Delete Preview](./screenshots/DeleteState.jpg)
 
 ## If you would like to run this application locally:
 1. Fork this repo.
@@ -14,25 +17,3 @@ This is a single-page application built with React that allows users to book, ed
 
 Additionally, you can run the Jest tests framework in the scheduler folder using ```sh npm test``` in a separate terminal. There is also
 several Storybook visual tests available that can be accessed using ```sh npm run storybook```.
-
-## Setup
-
-Install dependencies with `npm install`.
-
-## Running Webpack Development Server
-
-```sh
-npm start
-```
-
-## Running Jest Test Framework
-
-```sh
-npm test
-```
-
-## Running Storybook Visual Testbed
-
-```sh
-npm run storybook
-```
