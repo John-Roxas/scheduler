@@ -24,17 +24,11 @@ export default function Appointment(props) {
     props.interview ? SHOW : EMPTY
   );
 
-  // const onAdd = () => {
-  //   transition(CREATE);
-  // };
-
   const confirmDelete = () => {
-    // TO DO: THROW THIS INTO SPECIFIC MODE
     transition(CONFIRM);
   };
 
   const edit = () => {
-    // TO DO: THROW THIS INTO SPECIFIC MODE
     transition(EDIT);
   };
 
@@ -50,7 +44,6 @@ export default function Appointment(props) {
       .bookInterview(props.id, interview)
       .then(() => {})
       .catch(() => {
-        // console.log("ERROR");
         transition(ERROR_SAVE, true);
         error = true;
       })
@@ -66,25 +59,12 @@ export default function Appointment(props) {
 
     props
       .cancelInterview(props.id)
-      // .then(() => transition(DELETING, true))
       .then(() => transition(EMPTY, true))
       .catch(() => {
         transition(DELETING, true);
         transition(ERROR_DELETE, true);
       });
   }
-
-  // async function cancel() {
-  //   try {
-  //     await transition(DELETING);
-  //     await props.cancelInterview(props.id);
-  //     await transition(EMPTY);
-  //     await props.transition(EMPTY);
-  //   } catch (error) {
-  //     transition(ERROR_DELETE, true);
-  //   }
-  // }
-
   let display;
   if (mode === "SHOW") {
     display = (
@@ -100,8 +80,6 @@ export default function Appointment(props) {
   } else if (mode === "ERROR_DELETE") {
     display = <Error message={"Could not delete component!"} onClose={back} />;
   } else if (mode === "CREATE") {
-    // Render the Form component when mode is "CREATE"
-
     display = (
       <Form
         onCancel={back}

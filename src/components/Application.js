@@ -33,9 +33,6 @@ export default function Application(props) {
         interview={interview}
         interviewersForDay={interviewersForDay}
         interviewers={state.interviewers} // Pass the interviewers prop to the Appointment component
-        // mode={isActive ? mode : SHOW} // Pass the mode to the Appointment component only if it's active
-        // transition={transition}
-        // back={back}
         bookInterview={bookInterview} // Pass the bookInterview function to the Appointment component
         cancelInterview={cancelInterview} // Pass the cancelInterview function to the Appointment component
       />
@@ -52,12 +49,7 @@ export default function Application(props) {
         />
         <hr className="sidebar__separator sidebar--centered" />
         <nav className="sidebar__menu">
-          <DayList
-            days={state.days}
-            value={state.day}
-            onChange={setDay}
-            // spots={state.spots}
-          />
+          <DayList days={state.days} value={state.day} onChange={setDay} />
         </nav>
         <img
           className="sidebar__lhl sidebar--centered"
